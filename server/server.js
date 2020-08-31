@@ -1,7 +1,7 @@
 const express = require("express");
 const db = require("./config/database");
 const mongoose = require("mongoose");
-
+const port = process.env.PORT || 3001;
 class App {
   constructor() {
     this.express = express();
@@ -10,7 +10,7 @@ class App {
     this.middlewares();
     this.routes();
 
-    this.express.listen(3001, () =>
+    this.express.listen(port, () =>
       console.log(`Sua API REST está funcionando na porta 3001 `)
     );
   }
