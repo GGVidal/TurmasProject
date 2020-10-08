@@ -4,7 +4,7 @@ const yup = require("yup");
 class ClassesController {
   async store(req, res) {
     const schema = yup.object().shape({
-      name: yup.string().required(),
+      name: yup.string().strict().required(),
       class_info: yup.object().shape({
         day: yup.string().required(),
         disciplines: yup.array().required(), //todo validate object inside array
@@ -25,10 +25,8 @@ class ClassesController {
 
     const classExist = await Classes.find({
       name: req.body.name,
-      class_info: req.body.class_info,
-      zoom: req.body.zoom,
     });
-    if (classExist) {
+    if (classExist.length > 0) {
       return res.status(400).json({ error: "Sala já existe" });
     }
     try {
