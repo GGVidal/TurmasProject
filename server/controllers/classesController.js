@@ -4,11 +4,16 @@ const yup = require("yup");
 class ClassesController {
   async store(req, res) {
     const schema = yup.object().shape({
-      classroom: yup.string().required(),
-      instructors: yup.array().required(),
-      host: yup.string().required(),
-      account: yup.string().required(),
-      day: yup.string().required(),
+      name: yup.string().strict().required(),
+      class_info: yup.object().shape({
+        day: yup.string().required(),
+        disciplines: yup.array().required(), //todo validate object inside array
+      }),
+      zoom: yup.object().shape({
+        room: yup.string().required(),
+        host: yup.string().required(),
+        account: yup.string().required(),
+      }),
       schedule: yup.object().shape({
         start: yup.string().required(),
         finish: yup.string().required(),
@@ -19,26 +24,17 @@ class ClassesController {
     }
 
     const classExist = await Classes.find({
-      classroom: req.body.classroom,
-      instructors: req.body.instructors,
-      host: req.body.host,
-      account: req.body.account,
-      day: req.body.day,
+      name: req.body.name,
     });
-    if (classExist) {
+    if (classExist.length > 0) {
       return res.status(400).json({ error: "Sala já existe" });
     }
     try {
-      const {
-        classroom,
-        instructors,
-        host,
-        account,
-        day,
-        schedule,
-      } = await Classes.create(req.body);
+      const { name, class_info, zoom, schedule } = await Classes.create(
+        req.body
+      );
 
-      return res.json({ classroom, instructors, host, account, day, schedule });
+      return res.json({ name, class_info, zoom, schedule });
     } catch (err) {
       return res.status(401).json({ error: "Erro interno" });
     }
