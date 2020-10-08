@@ -44,6 +44,13 @@ class ClassesController {
 
     return res.json(data);
   }
+  async remove(req, res) {
+    const { id } = req.params;
+
+    const deletedClass = Classes.findByIdAndDelete(id);
+
+    return res.json(deletedClass);
+  }
 }
 
 module.exports = new ClassesController();
